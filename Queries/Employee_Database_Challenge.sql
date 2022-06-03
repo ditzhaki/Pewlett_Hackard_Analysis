@@ -61,3 +61,53 @@ ORDER BY e.emp_no;
 
 -- Check the table
 SELECT * FROM mentorship_eligibility;
+
+-- Additional Queries
+
+-- Total Salary of Retirees per Title
+SELECT ut.emp_no,
+	ut.first_name,
+	ut.last_name,
+	ut.title,
+	sl.salary
+INTO retiring_salaries
+FROM unique_titles AS ut
+	INNER JOIN titles AS ti
+		ON (ut.emp_no = ti.emp_no)
+	INNER JOIN salaries AS sl
+		ON (ut.emp_no = sl.emp_no)
+ORDER BY ut.emp_no;
+
+SELECT * FROM retiring_salaries;
+
+-- Counts of retiring employees salaries
+SELECT SUM (salary), title
+INTO retiring_salary_sum
+FROM retiring_salaries
+GROUP BY title
+ORDER BY SUM DESC;
+
+SELECT * FROM retiring_salary_sum;
+
+-- Retiring employees per Department
+SELECT ut.emp_no,
+	ut.first_name,
+	ut.last_name,
+	ut.title,
+	d.dept_name
+INTO retiring_depts
+FROM unique_titles AS ut
+	INNER JOIN dept_emp AS de
+		ON (ut.emp_no = de.emp_no)
+	INNER JOIN departments AS d
+		ON (de.dept_no = d.dept_no)
+ORDER BY ut.last_name, ut.first_name;
+
+-- Counts of retiring employees by department
+SELECT COUNT (emp_no), dept_name
+INTO retiring_dept_count
+FROM retiring_depts
+GROUP BY dept_name
+ORDER BY COUNT DESC;
+
+SELECT * FROM retiring_dept_count;
